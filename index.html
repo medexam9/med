@@ -5,166 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نتائج جامعة حمص - الطب البشري</title>
     <style>
-        /* الخلفية العامة للموقع */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fafafa; /* رمادي فاتح جداً مريح للعين */
+            background-color: #fafafa;
             margin: 0;
             padding: 0;
             color: #333;
         }
 
-        #header-wrapper { display: block; }
-
+        /* رأس الموقع والنجوم */
         header {
-            background: #000000 url('https://www.transparenttextures.com/patterns/stardust.png');
-            height: 110px;
+            background: #000;
+            height: 115px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             color: white;
-            border-bottom: 4px solid #00a94f;
+            overflow: visible;
         }
 
-        /* تكبير عنوان الصفحة قليلاً */
         .header-title {
-            font-size: 1.6rem; 
+            font-size: 1.5rem;
             font-weight: bold;
+            z-index: 5;
             text-align: center;
+            text-shadow: 0 0 10px rgba(0,0,0,0.9);
         }
 
+        /* تأثير النجوم (أكبر حجماً) */
+        .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .star { 
+            position: absolute; 
+            background: white; 
+            border-radius: 50%; 
+            opacity: 0; 
+            animation: twinkle var(--duration) infinite ease-in-out; 
+            box-shadow: 0 0 5px #fff; /* إضافة توهج للنجوم */
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(0.6); } 50% { opacity: 1; transform: scale(1.3); } }
+
+        /* اللوغو (حجم أصغر قليلاً) */
         .logo {
             position: absolute;
-            right: 15px;
-            top: 10px;
-            width: 75px;
+            right: 25px;
+            top: 30px; 
+            width: 95px; 
+            z-index: 15; 
+            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6));
         }
 
-        .color-bar {
-            height: 5px;
-            background: linear-gradient(to left, #00a94f 33%, #ffffff 33%, #ffffff 66%, #ce1126 66%);
+        /* نظام الأشرطة (ثخانة أقل) */
+        .ribbon-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
         }
+        .bar-green { height: 4px; background-color: #00a94f; }
+        .bar-white { 
+            height: 22px; 
+            background-color: #ffffff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ce1126;
+            font-size: 16px;
+            letter-spacing: 5px;
+        }
+        .bar-black { height: 4px; background-color: #000000; }
+
+        /* المحتوى والبحث */
+        .container { width: 95%; max-width: 900px; margin: 35px auto; }
+        .search-table { width: 100%; max-width: 450px; margin: 0 auto; border-collapse: collapse; background: #fff; border: 1px solid #ccc; }
+        .search-table td { padding: 12px; border: 1px solid #eee; }
+        .label-cell { background-color: #f4f4f4; width: 35%; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 0; font-size: 1rem; box-sizing: border-box; outline: none; }
         
-        .stars-container {
-            text-align: center;
-            background: #f0f0f0;
-            padding: 5px 0;
-            color: #ce1126;
-            font-size: 14px;
-        }
+        .btn-wrapper { text-align: center; padding: 12px; background: #f9f9f9; }
+        .btn-show { background-color: #efefef; border: 1px solid #bbb; padding: 6px 30px; cursor: pointer; font-size: 0.95rem; }
 
-        .container {
-            width: 95%;
-            max-width: 900px;
-            margin: 40px auto;
-        }
-
-        /* إطار التعبئة مربع ومتناسق */
-        .search-table {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            border-collapse: collapse;
-            background: #fff;
-            border: 1px solid #ccc;
-        }
-
-        .search-table td {
-            padding: 15px;
-            border: 1px solid #eee;
-        }
-
-        .label-cell {
-            background-color: #f4f4f4;
-            width: 35%;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* جعل حقول الإدخال مربعة تماماً */
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #bbb;
-            border-radius: 0; /* حواف مربعة */
-            font-size: 1.1rem;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        .btn-show {
-            background-color: #efefef;
-            border: 1px solid #bbb;
-            border-radius: 0; /* مربع */
-            padding: 12px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            width: 100%;
-            transition: 0.2s;
-        }
-
-        .btn-show:hover { background-color: #e2e2e2; }
-
-        /* توسيط الاسم بخط كبير */
-        .student-name-display {
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: normal;
-            margin: 30px 0;
-            color: #000;
-        }
-
+        /* النتائج */
         #results-section { display: none; }
+        .student-name-display { text-align: center; font-size: 1.7rem; margin: 15px 0 20px 0; color: #000; font-weight: normal; }
+        .table-wrapper { width: 100%; background-color: #f2f2f2; border: 1px solid #ddd; }
+        .results-table { width: 100%; border-collapse: collapse; }
+        .results-table th { background-color: #84b574; color: white; padding: 12px 5px; font-weight: normal; font-size: 1rem; border: 1px solid #75a366; }
+        .results-table td { padding: 16px 8px; border: 1px solid #ddd; text-align: center; font-size: 1rem; background-color: #f2f2f2; }
+        
+        .back-container { text-align: right; margin-top: 25px; }
+        .back-link { color: #ce1126; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
 
-        .table-responsive {
-            overflow-x: auto;
-            background-color: #f2f2f2;
-        }
-
-        /* إعدادات خط الجدول */
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 700px;
-        }
-
-        .results-table th {
-            background-color: #84b574;
-            color: white;
-            padding: 18px 10px;
-            border: 1px solid #75a366;
-            font-weight: normal; /* إزالة اللون الغامق */
-            font-size: 1.2rem; /* خط أكبر للرؤوس */
-        }
-
-        .results-table td {
-            padding: 22px 10px; /* ارتفاع أعلى للخلايا */
-            border: 1px solid #ddd;
-            text-align: center;
-            background-color: #f2f2f2;
-            font-weight: normal; /* إزالة اللون الغامق */
-            font-size: 1.15rem; /* خط أكبر للبيانات */
-            color: #333;
-        }
-
-        .back-container {
-            text-align: right;
-            margin-top: 25px;
-        }
-
-        .back-link {
-            color: #ce1126;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* استجابة الهاتف */
-        @media (max-width: 600px) {
-            .header-title { font-size: 1.2rem; }
-            .results-table td, .results-table th { font-size: 1rem; padding: 15px 5px; }
-            .student-name-display { font-size: 1.4rem; }
+        /* الهواتف */
+        @media (max-width: 768px) {
+            .logo { width: 80px; top: 25px; right: 10px; }
+            .header-title { font-size: 1.1rem; padding: 0 90px 0 10px; }
+            .results-table th, .results-table td { font-size: 0.85rem; padding: 10px 2px; }
+            header { height: 100px; }
+            .bar-white { height: 18px; font-size: 14px; }
         }
     </style>
 </head>
@@ -172,106 +111,96 @@
 
 <div id="header-wrapper">
     <header>
-        <div class="header-title">النتائج الامتحانية حسب الرقم الجامعي</div>
+        <div class="stars" id="starField"></div>
         <img src="ww.png" alt="Logo" class="logo">
+        <div class="header-title">النتائج الامتحانية حسب الرقم الجامعي</div>
     </header>
-    <div class="color-bar"></div>
-    <div class="stars-container">★ ★ ★</div>
+    
+    <div class="ribbon-container">
+        <div class="bar-green"></div>
+        <div class="bar-white">★ ★ ★</div>
+        <div class="bar-black"></div>
+    </div>
 </div>
 
 <div class="container" id="search-section">
     <table class="search-table">
-        <tr>
-            <td class="label-cell">الفرع</td>
-            <td>
-                <select><option>الطب البشري</option></select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label-cell">الرقم الجامعي</td>
-            <td>
-                <input type="number" id="studentIDInput" placeholder="أدخل الرقم الجامعي">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="background: #f9f9f9; padding: 10px;">
-                <button class="btn-show" onclick="fetchResults()">عرض</button>
-            </td>
-        </tr>
+        <tr><td class="label-cell">الفرع</td><td><select><option>الطب البشري</option></select></td></tr>
+        <tr><td class="label-cell">الرقم الجامعي</td><td><input type="number" id="studentIDInput" placeholder="أدخل الرقم الجامعي"></td></tr>
+        <tr><td colspan="2" class="btn-wrapper"><button class="btn-show" onclick="fetchResults()">عرض</button></td></tr>
     </table>
 </div>
 
 <div class="container" id="results-section">
     <div id="nameDisplay" class="student-name-display"></div>
-    
-    <div class="table-responsive">
+    <div class="table-wrapper">
         <table class="results-table">
             <thead>
-                <tr>
-                    <th style="width: 35%;">اسم المادة</th>
-                    <th>عملي</th>
-                    <th>نظري</th>
-                    <th>المجموع</th>
-                    <th>الفصل</th>
-                    <th>السنة</th>
-                </tr>
+                <tr><th style="width: 35%;">المادة</th><th>عملي</th><th>نظري</th><th>مجموع</th><th>فصل</th><th>سنة</th></tr>
             </thead>
             <tbody id="results-body"></tbody>
         </table>
     </div>
-
-    <div class="back-container">
-        <a href="#" class="back-link" onclick="location.reload()">عودة للخلف →</a>
-    </div>
+    <div class="back-container"><a href="#" class="back-link" onclick="location.reload()">عودة للخلف →</a></div>
 </div>
 
 <script src="students.js"></script>
-
 <script>
+    // إنشاء نجوم أكبر قليلاً
+    const starField = document.getElementById('starField');
+    for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = (Math.random() * 3.5 + 1.5) + 'px'; // حجم بين 1.5 و 5 بيكسل
+        star.style.width = size; star.style.height = size;
+        star.style.top = Math.random() * 100 + '%';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+        star.style.animationDelay = Math.random() * 5 + 's';
+        starField.appendChild(star);
+    }
+
     function fetchResults() {
         const inputId = document.getElementById('studentIDInput').value.trim();
         const resultsBody = document.getElementById('results-body');
         const nameDisplay = document.getElementById('nameDisplay');
         const headerWrapper = document.getElementById('header-wrapper');
         
-        if (!inputId) {
-            alert("يرجى إدخال الرقم الجامعي");
-            return;
-        }
+        if (!inputId) { alert("يرجى إدخال الرقم الجامعي"); return; }
 
         const student = studentData.find(s => s.uniId === inputId);
-
         if (student) {
             nameDisplay.innerText = student.name;
             resultsBody.innerHTML = ""; 
-            
+            let hasVisibleGrades = false;
+
             for (const [subject, grades] of Object.entries(student.scores)) {
                 const practical = grades.practical || 0;
                 const theoretical = grades.theoretical || 0;
                 const finalGrade = practical + theoretical;
 
-                const row = `
-                    <tr>
-                        <td style="text-align: right; padding-right: 20px;">${subject}</td>
-                        <td>${practical}</td>
-                        <td>${theoretical}</td>
-                        <td>${finalGrade}</td>
-                        <td>1</td>
-                        <td>2025-2026</td>
-                    </tr>
-                `;
-                resultsBody.innerHTML += row;
+                if (finalGrade > 0) {
+                    hasVisibleGrades = true;
+                    resultsBody.innerHTML += `
+                        <tr>
+                            <td style="text-align: right; padding-right: 15px;">${subject}</td>
+                            <td>${practical}</td>
+                            <td>${theoretical}</td>
+                            <td>${finalGrade}</td>
+                            <td>1</td>
+                            <td>2025-2026</td>
+                        </tr>
+                    `;
+                }
             }
 
+            if (!hasVisibleGrades) { alert("لا توجد نتائج لهذا الرقم حالياً."); return; }
             headerWrapper.style.display = 'none';
             document.getElementById('search-section').style.display = 'none';
             document.getElementById('results-section').style.display = 'block';
             window.scrollTo(0, 0);
-        } else {
-            alert("الرقم الجامعي غير صحيح.");
-        }
+        } else { alert("الرقم الجامعي غير موجود."); }
     }
 </script>
-
 </body>
 </html>
