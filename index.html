@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتائج جامعة حمص - الطب البشري</title>
+    <style>
+        /* الخلفية العامة للموقع */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa; /* رمادي فاتح جداً مريح للعين */
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        #header-wrapper { display: block; }
+
+        header {
+            background: #000000 url('https://www.transparenttextures.com/patterns/stardust.png');
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: white;
+            border-bottom: 4px solid #00a94f;
+        }
+
+        /* تكبير عنوان الصفحة قليلاً */
+        .header-title {
+            font-size: 1.6rem; 
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .logo {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            width: 75px;
+        }
+
+        .color-bar {
+            height: 5px;
+            background: linear-gradient(to left, #00a94f 33%, #ffffff 33%, #ffffff 66%, #ce1126 66%);
+        }
+        
+        .stars-container {
+            text-align: center;
+            background: #f0f0f0;
+            padding: 5px 0;
+            color: #ce1126;
+            font-size: 14px;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        /* إطار التعبئة مربع ومتناسق */
+        .search-table {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .search-table td {
+            padding: 15px;
+            border: 1px solid #eee;
+        }
+
+        .label-cell {
+            background-color: #f4f4f4;
+            width: 35%;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* جعل حقول الإدخال مربعة تماماً */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bbb;
+            border-radius: 0; /* حواف مربعة */
+            font-size: 1.1rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .btn-show {
+            background-color: #efefef;
+            border: 1px solid #bbb;
+            border-radius: 0; /* مربع */
+            padding: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: 0.2s;
+        }
+
+        .btn-show:hover { background-color: #e2e2e2; }
+
+        /* توسيط الاسم بخط كبير */
+        .student-name-display {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: normal;
+            margin: 30px 0;
+            color: #000;
+        }
+
+        #results-section { display: none; }
+
+        .table-responsive {
+            overflow-x: auto;
+            background-color: #f2f2f2;
+        }
+
+        /* إعدادات خط الجدول */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        .results-table th {
+            background-color: #84b574;
+            color: white;
+            padding: 18px 10px;
+            border: 1px solid #75a366;
+            font-weight: normal; /* إزالة اللون الغامق */
+            font-size: 1.2rem; /* خط أكبر للرؤوس */
+        }
+
+        .results-table td {
+            padding: 22px 10px; /* ارتفاع أعلى للخلايا */
+            border: 1px solid #ddd;
+            text-align: center;
+            background-color: #f2f2f2;
+            font-weight: normal; /* إزالة اللون الغامق */
+            font-size: 1.15rem; /* خط أكبر للبيانات */
+            color: #333;
+        }
+
+        .back-container {
+            text-align: right;
+            margin-top: 25px;
+        }
+
+        .back-link {
+            color: #ce1126;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* استجابة الهاتف */
+        @media (max-width: 600px) {
+            .header-title { font-size: 1.2rem; }
+            .results-table td, .results-table th { font-size: 1rem; padding: 15px 5px; }
+            .student-name-display { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="header-wrapper">
+    <header>
+        <div class="header-title">النتائج الامتحانية حسب الرقم الجامعي</div>
+        <img src="ww.png" alt="Logo" class="logo">
+    </header>
+    <div class="color-bar"></div>
+    <div class="stars-container">★ ★ ★</div>
+</div>
+
+<div class="container" id="search-section">
+    <table class="search-table">
+        <tr>
+            <td class="label-cell">الفرع</td>
+            <td>
+                <select><option>الطب البشري</option></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label-cell">الرقم الجامعي</td>
+            <td>
+                <input type="number" id="studentIDInput" placeholder="أدخل الرقم الجامعي">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="background: #f9f9f9; padding: 10px;">
+                <button class="btn-show" onclick="fetchResults()">عرض</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="container" id="results-section">
+    <div id="nameDisplay" class="student-name-display"></div>
+    
+    <div class="table-responsive">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">اسم المادة</th>
+                    <th>عملي</th>
+                    <th>نظري</th>
+                    <th>المجموع</th>
+                    <th>الفصل</th>
+                    <th>السنة</th>
+                </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+        </table>
+    </div>
+
+    <div class="back-container">
+        <a href="#" class="back-link" onclick="location.reload()">عودة للخلف →</a>
+    </div>
+</div>
+
+<script src="students.js"></script>
+
+<script>
+    function fetchResults() {
+        const inputId = document.getElementById('studentIDInput').value.trim();
+        const resultsBody = document.getElementById('results-body');
+        const nameDisplay = document.getElementById('nameDisplay');
+        const headerWrapper = document.getElementById('header-wrapper');
+        
+        if (!inputId) {
+            alert("يرجى إدخال الرقم الجامعي");
+            return;
+        }
+
+        const student = studentData.find(s => s.uniId === inputId);
+
+        if (student) {
+            nameDisplay.innerText = student.name;
+            resultsBody.innerHTML = ""; 
+            
+            for (const [subject, grades] of Object.entries(student.scores)) {
+                const practical = grades.practical || 0;
+                const theoretical = grades.theoretical || 0;
+                const finalGrade = practical + theoretical;
+
+                const row = `
+                    <tr>
+                        <td style="text-align: right; padding-right: 20px;">${subject}</td>
+                        <td>${practical}</td>
+                        <td>${theoretical}</td>
+                        <td>${finalGrade}</td>
+                        <td>1</td>
+                        <td>2025-2026</td>
+                    </tr>
+                `;
+                resultsBody.innerHTML += row;
+            }
+
+            headerWrapper.style.display = 'none';
+            document.getElementById('search-section').style.display = 'none';
+            document.getElementById('results-section').style.display = 'block';
+            window.scrollTo(0, 0);
+        } else {
+            alert("الرقم الجامعي غير صحيح.");
+        }
+    }
+</script>
+
+</body>
+</html>
