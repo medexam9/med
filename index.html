@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نتائج جامعة حمص - الطب البشري</title>
     <style>
-        /* تثبيت خط Segoe UI على كامل الصفحة */
+        /* تثبيت الخط ليكون Segoe UI أو بدائل النظام المتوافقة على الهاتف */
         * {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif !important;
+            box-sizing: border-box;
         }
 
         body {
@@ -15,8 +16,10 @@
             margin: 0;
             padding: 0;
             color: #333;
+            line-height: 1.6;
         }
 
+        /* الرأس والأشرطة */
         header {
             background: #000;
             height: 115px;
@@ -35,7 +38,7 @@
             text-align: center;
         }
 
-        /* النجوم المتألقة */
+        /* النجوم */
         .stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .star { 
             position: absolute; background: white; border-radius: 50%; opacity: 0; 
@@ -48,7 +51,6 @@
             filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6));
         }
 
-        /* الأشرطة النحيفة */
         .ribbon-container { width: 100%; display: flex; flex-direction: column; position: relative; z-index: 10; }
         .bar-green { height: 4px; background-color: #00a94f; }
         .bar-white { 
@@ -57,36 +59,48 @@
         }
         .bar-black { height: 4px; background-color: #000000; }
 
-        .container { width: 95%; max-width: 900px; margin: 35px auto; }
-
         /* البحث */
+        .container { width: 95%; max-width: 900px; margin: 35px auto; }
         .search-table { width: 100%; max-width: 450px; margin: 0 auto; border-collapse: collapse; background: #fff; border: 1px solid #ccc; }
         .search-table td { padding: 12px; border: 1px solid #eee; }
         .label-cell { background-color: #f4f4f4; width: 35%; font-weight: bold; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 0; font-size: 1rem; box-sizing: border-box; outline: none; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 0; font-size: 1rem; outline: none; }
         .btn-wrapper { text-align: center; padding: 12px; background: #f9f9f9; }
         .btn-show { background-color: #efefef; border: 1px solid #bbb; padding: 6px 30px; cursor: pointer; }
 
-        /* النتائج والمسافات */
-        #results-section { display: none; }
-        .student-name-display { 
-            text-align: center; font-size: 1.7rem; 
-            margin: 10px 0 5px 0; /* مسافة أقل جداً من الأسفل */
-            color: #000; 
+        /* قسم النتائج - في بداية الصفحة تماماً */
+        #results-section { 
+            display: none; 
+            margin-top: 0 !important; /* إلغاء أي فراغ علوي */
+            padding-top: 0 !important;
         }
 
-        .table-wrapper { width: 100%; background-color: #f2f2f2; border: 1px solid #ddd; margin-top: 5px; }
-        .results-table { width: 100%; border-collapse: collapse; }
-        .results-table th { background-color: #84b574; color: white; padding: 12px 5px; font-weight: normal; font-size: 1rem; border: 1px solid #75a366; }
-        .results-table td { padding: 16px 8px; border: 1px solid #ddd; text-align: center; font-size: 1rem; background-color: #f2f2f2; }
-        
-        .back-container { text-align: right; margin-top: 20px; }
-        .back-link { color: #ce1126; text-decoration: none; font-weight: bold; font-size: 1rem; }
+        /* الاسم - حجم أقل وبداية الصفحة */
+        .student-name-display { 
+            text-align: center; 
+            font-size: 1.3rem; /* حجم أصغر */
+            margin: 0; /* إلغاء المسافات تماماً */
+            padding: 10px 0;
+            color: #000; 
+            background: #fafafa; /* نفس لون الخلفية لعدم وجود فاصل */
+            width: 100%;
+        }
 
+        .table-wrapper { width: 100%; background-color: #f2f2f2; border: 1px solid #ddd; margin-top: 0; }
+        .results-table { width: 100%; border-collapse: collapse; }
+        .results-table th { background-color: #84b574; color: white; padding: 12px 5px; font-weight: normal; font-size: 0.95rem; border: 1px solid #75a366; }
+        .results-table td { padding: 15px 8px; border: 1px solid #ddd; text-align: center; font-size: 0.95rem; background-color: #f2f2f2; }
+        
+        .back-container { text-align: right; margin-top: 20px; padding-right: 10px; }
+        .back-link { color: #ce1126; text-decoration: none; font-weight: bold; font-size: 0.95rem; }
+
+        /* تعديلات الهاتف لضمان ظهور الخط والتنسيق */
         @media (max-width: 768px) {
             .logo { width: 80px; top: 25px; right: 10px; }
             .header-title { font-size: 1.1rem; padding: 0 90px 0 10px; }
             header { height: 100px; }
+            .student-name-display { font-size: 1.1rem; padding: 5px 0; }
+            .results-table th, .results-table td { font-size: 0.8rem; padding: 10px 2px; }
         }
     </style>
 </head>
@@ -113,15 +127,14 @@
     </table>
 </div>
 
-<div class="container" id="results-section">
+<div id="results-section">
     <div id="nameDisplay" class="student-name-display"></div>
     <div class="table-wrapper">
         <table class="results-table">
             <thead>
                 <tr><th style="width: 35%;">المادة</th><th>عملي</th><th>نظري</th><th>مجموع</th><th>فصل</th><th>سنة</th></tr>
             </thead>
-            <tbody id="results-body">
-                </tbody>
+            <tbody id="results-body"></tbody>
         </table>
     </div>
     <div class="back-container"><a href="#" class="back-link" onclick="location.reload()">عودة للخلف →</a></div>
@@ -134,7 +147,7 @@
     for (let i = 0; i < 50; i++) {
         const star = document.createElement('div');
         star.className = 'star';
-        const size = (Math.random() * 3.5 + 1.5) + 'px';
+        const size = (Math.random() * 3 + 1.5) + 'px';
         star.style.width = size; star.style.height = size;
         star.style.top = Math.random() * 100 + '%';
         star.style.left = Math.random() * 100 + '%';
@@ -147,27 +160,20 @@
         const inputId = document.getElementById('studentIDInput').value.trim();
         const resultsBody = document.getElementById('results-body');
         const nameDisplay = document.getElementById('nameDisplay');
-        const headerWrapper = document.getElementById('header-wrapper');
         
         if (!inputId) { alert("يرجى إدخال الرقم الجامعي"); return; }
 
         const student = studentData.find(s => s.uniId === inputId);
-        
-        // مسح محتويات الجدول السابقة
         resultsBody.innerHTML = "";
         nameDisplay.innerText = "";
 
         if (student) {
             nameDisplay.innerText = student.name;
-            let hasVisibleGrades = false;
-
             for (const [subject, grades] of Object.entries(student.scores)) {
                 const practical = grades.practical || 0;
                 const theoretical = grades.theoretical || 0;
                 const finalGrade = practical + theoretical;
-
                 if (finalGrade > 0) {
-                    hasVisibleGrades = true;
                     resultsBody.innerHTML += `
                         <tr>
                             <td style="text-align: right; padding-right: 15px;">${subject}</td>
@@ -181,8 +187,9 @@
                 }
             }
         } 
-        // حتى لو لم يوجد طالب، سيتم عرض الجدول فارغاً كما طلبت
-        headerWrapper.style.display = 'none';
+
+        // إخفاء العناصر وعرض النتيجة في أعلى الصفحة تماماً
+        document.getElementById('header-wrapper').style.display = 'none';
         document.getElementById('search-section').style.display = 'none';
         document.getElementById('results-section').style.display = 'block';
         window.scrollTo(0, 0);
